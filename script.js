@@ -12,16 +12,17 @@ function GetChart(){
     .then(data => {
         const year = data.map(d=>{return d.Year})
         const maxYear = d3.max(year)
-        const minYear =d3.min(year)
+        const minYear = d3.min(year)
         //create axis X
         const xScale = d3.scaleLinear()
             .domain([minYear - 1, maxYear + 1])
-            .range([0, width - 100]);
+            .range([0, width - 70]);
         const xAxis = d3.axisBottom()
+            .tickFormat(d3.format("d"))
             .scale(xScale);
         chartHolder.append("g")
             .attr("id","x-axis")
-            .attr('transform', 'translate(60, 480)')
+            .attr('transform', 'translate(60, 510)')
             .call(xAxis);
 
         //create axis Y
@@ -32,16 +33,16 @@ function GetChart(){
         const maxTime = d3.max(time);
         const minTime = d3.min(time);
         
-        const yScale =d3.scaleTime()
+        const yScale = d3.scaleTime()
             .domain([minTime,maxTime])
-            .range([0,height - 20])
+            .range([0,height ])
         const timeFormat = d3.timeFormat('%M:%S');
         const yAxis = d3.axisLeft()
             .tickFormat(timeFormat)
             .scale(yScale)
         chartHolder.append("g")
             .attr("id","y-axis")
-            .attr('transform', 'translate(60, 0)')
+            .attr('transform', 'translate(60, 10)')
             .call(yAxis);
         //add TEXT
         chartHolder.append("text")
@@ -52,17 +53,24 @@ function GetChart(){
             .style("fill","#006D77")
             .text("Time in Minutes")
         //rect
-        const rect = d3.select("svg")
+        const color = ["#006D77","#E29578"]
+        d3.select("svg")
             .selectAll(".dot")
             .data(data)
             .enter()
             .append("circle")
             .attr("class","dot")
-            .attr("r",8)
-            .attr("data-xvalue",(dx)=>{dx.Year})
-            .attr("data-yvalue",(dy)=>{dy.Time})
+            .attr("r",6)
+            .attr("data-xvalue",(dx)=>{return dx.Year})
+            .attr("data-yvalue",(dy)=>{return time[dy.Place - 1]})
             .attr('transform', 'translate(60, 480)')
             .attr("cx",(cx)=>{return xScale(cx.Year)})
-            .attr("cy",(cy)=>{return yScale(cy.Time)})
+            .attr("cy",(cy)=>{return yScale(time[cy.Place - 1] ) - 470})
+            .style('fill',(d)=>{return d.Doping !=="" ? color[0] : color[1]})
+        
+        //legend
+        
+
+
     })
 }
