@@ -25,8 +25,16 @@
     display: flex;
     justify-content: center;
     color: black;
+    font-weight:bold
 }
 svg{
     height: 535px;
     width: 925px;
 }
+#tooltip {
+    padding: 2px;
+    font: 15px;
+    box-shadow: 1px 1px 10px;
+    border-radius: 2px;
+    position: absolute;
+  }

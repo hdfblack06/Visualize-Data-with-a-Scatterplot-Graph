@@ -1,11 +1,15 @@
 function GetChart(){
     const width = 920;
     const height = 500;
-    var chartHolder = d3.select("#chartHolder")
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height);
-    
+    let chartHolder = d3.select("#chartHolder")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+    const tooltip = d3.select("#chartHolder")
+        .append("div")
+        .attr("id","tooltip")
+        .style("opacity",0)
+
     const JsonData = "https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/cyclist-data.json"
     fetch(JsonData)
     .then(response => response.json())
@@ -67,6 +71,22 @@ function GetChart(){
             .attr("cx",(cx)=>{return xScale(cx.Year)})
             .attr("cy",(cy)=>{return yScale(time[cy.Place - 1] ) - 470})
             .style('fill',(d)=>{return d.Doping !=="" ? color[1] : color[0]})
+            .on("mouseover",(event,d)=>{
+                tooltip.transition()
+                    .duration(0)
+                    .style("opacity",0.9)
+                    .attr("data-year",d.Year)
+                tooltip.html(`${d.Name}: ${d.Nationality} <br/> Year: ${d.Year}, Time ${timeFormat(time[d.Place - 1])} ${d.Doping ? '<br/><br/>' + d.Doping : ''}`)
+                        .style('left', `${event.pageX + 10}px`)
+                        .style('top', `${event.pageY - 20}px`)
+                        .style("color","#006D77")
+                        .style('background-color', '#83C5BE');
+                    
+    
+                })
+                .on("mouseout",()=>{
+                    tooltip.style("opacity",0)
+                })
         
         //legend
         const legendContainer = chartHolder.append("g").attr("id","legend")
