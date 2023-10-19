@@ -53,7 +53,7 @@ function GetChart(){
             .style("fill","#006D77")
             .text("Time in Minutes")
         //rect
-        const color = ["#006D77","#E29578"]
+        const color = ["#E29578","#006D77"]
         d3.select("svg")
             .selectAll(".dot")
             .data(data)
@@ -66,11 +66,33 @@ function GetChart(){
             .attr('transform', 'translate(60, 480)')
             .attr("cx",(cx)=>{return xScale(cx.Year)})
             .attr("cy",(cy)=>{return yScale(time[cy.Place - 1] ) - 470})
-            .style('fill',(d)=>{return d.Doping !=="" ? color[0] : color[1]})
+            .style('fill',(d)=>{return d.Doping !=="" ? color[1] : color[0]})
         
         //legend
-        
-
-
+        const legendContainer = chartHolder.append("g").attr("id","legend")
+        legendContainer.append("rect")
+            .attr("width",250)
+            .attr("height",80)
+            .attr("transform",`translate(${width - 250},${height / 2 - 20})`)
+            .style("fill","#FFDDD2")
+        const legendLabel = legendContainer.selectAll(".lagendLabel")
+            .data(color)
+            .enter()
+            .append("g")
+            .attr("class","legendLabel")
+            .attr("transform", (d, i) => `translate(${width - 30}, ${height / 2 + 22 * i})`);
+        legendLabel.append("rect")
+            .attr("width",20)
+            .attr("height",20)
+            .style("fill",(d)=>{return d})
+        legendLabel.append("text")
+            .text((d,i)=>{
+                if(i==0){return "No doping allegations"}
+                else{return "Riders with doping allegations"}
+            })
+            .attr('transform', `translate(-5, 15)`)
+            .style('text-anchor', 'end')
+            .style("fill","#006D77")
+            
     })
 }
